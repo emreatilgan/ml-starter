@@ -1,0 +1,142 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+.envrc
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+pytestdebug.log
+coverage/
+
+# Type checkers / linters
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+profile_default/
+
+# IPython
+ipython_config.py
+
+# VSCode
+.vscode/
+
+# IDEs
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# Logs and temp files
+logs/
+*.log
+log/
+tmp/
+temp/
+
+# TensorBoard
+events.out.tfevents.*
+
+# ML experiment tracking
+wandb/
+mlruns/
+lightning_logs/
+checkpoints/
+runs/
+
+# Data & outputs (uncomment if you keep these out of git)
+# data/
+# datasets/
+# output/
+# outputs/
+# models/
+# results/
+
+# System files (Windows)
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Secrets and environment files
+.env
+.env.*
+*.env
+*.secret
+*.key
+*.pem
+
+# Node (if present)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Pyenv / Poetry
+.python-version
+poetry.lock
+
+# Editor swap/backup
+*~
+*.swp
+*.swo
