@@ -17,8 +17,7 @@ Run as a remote MCP server (only mode)
    - http://127.0.0.1:7860/gradio_api/mcp/sse
 
 VS Code Kilo Code MCP settings (remote URL)
-Add or update your MCP settings file at:
-- /Users/emreatilgan/Library/Application Support/Code/User/globalStorage/kilocode.kilo-code/settings/mcp_settings.json
+Add or update your MCP settings
 
 Example configuration:
 {
