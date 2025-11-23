@@ -40,7 +40,7 @@ def _ensure_index() -> EmbeddingIndex:
 
 def semantic_search(problem_markdown: str) -> Dict:
     """
-    Return only the best match path and its score.
+    Return only the best match and its score.
     {
       "best_match": "knowledge_base/nlp/text_classification_with_transformer.py",
       "score": 0.89
@@ -51,6 +51,6 @@ def semantic_search(problem_markdown: str) -> Dict:
     index = _ensure_index()
     best_item, score = index.search_one(problem_markdown)
     return {
-        "best_match": best_item.path,
+        "best_match": best_item,
         "score": round(float(score), 6),
     }

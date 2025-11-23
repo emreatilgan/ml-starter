@@ -44,7 +44,13 @@ def create_gradio_blocks() -> gr.Blocks:
 
         Returns:
             {
-              "best_match": "knowledge_base/<category>/<file>.py",
+              "best_match": {
+                  "id": str,
+                  "category": str,
+                  "filename": str,
+                  "path": str,
+                  "summary": str
+                },                  
               "score": float  # cosine similarity in [-1, 1]
             }
         """
