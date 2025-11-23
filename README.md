@@ -1,4 +1,4 @@
-KB Retrieval MCP Server (Gradio Remote Only)
+ML Starter MCP Server (Gradio Remote Only)
 ===========================================
 
 Overview
@@ -153,3 +153,90 @@ License
 
 Attribution
 - MCP server powered by Gradio’s MCP support and Sentence-Transformers for embeddings.
+
+UI/UX polish (what you get out-of-the-box)
+- Theming + CSS: Soft theme fallback with custom CSS for tighter visuals. See [python.create_gradio_blocks()](mcp_server/server.py:13) near the "Theme and lightweight custom CSS" section.
+- Curated examples: Quick-start examples are prefilled for both Semantic Search and Get Code tabs to reduce first-run friction.
+- Guided articles per tab:
+  - Browse Knowledge Base includes a hero guide with tips.
+  - Semantic Search and Open Code include mini “How-to” sections for clarity.
+- Clear labeling, spacing, and consistent tone across tabs.
+- Spaces-ready networking: The server auto-binds to 0.0.0.0 on Hugging Face Spaces to ensure external access. See [python.main()](mcp_server/server.py:159).
+
+How the polished UI is structured
+- Tabs (via [python.create_gradio_blocks()](mcp_server/server.py:13)):
+  - "List Items" (Browse Knowledge Base)
+    - Output: JSON list of items (id, category, filename, path, summary).
+    - Article: Hero guide with tips for using the app end-to-end.
+  - "Semantic Search"
+    - Input: Markdown textbox (with examples).
+    - Output: JSON containing the best match object and cosine score.
+    - Article: Step-by-step instructions to go from query → code.
+  - "Get Code"
+    - Input: KB path textbox (with examples).
+    - Output: Syntax-highlighted Python source.
+    - Article: Path formatting hints and usage notes.
+
+Hugging Face Spaces setup (recommended)
+- Space type: Gradio (Python).
+- Python version: 3.10+ (3.11 recommended).
+- Hardware: CPU is sufficient (MiniLM model). For faster cold starts, consider persistent storage.
+- requirements.txt already includes:
+  - gradio[mcp]
+  - sentence-transformers, numpy, torch, huggingface_hub
+- Entry options:
+  1) Minimal change (use your current entrypoint):
+     - Spaces defaults require an app object (e.g., demo) in app.py.
+     - To keep your CLI entrypoint, set a Custom Command in Space Settings to:
+       - python -m mcp_server.server
+  2) Conventional Gradio app.py (recommended for Spaces auto-discovery):
+     - Create an app.py that exposes a demo object:
+       - [python.create_gradio_blocks()](mcp_server/server.py:13) can be imported and used as:
+         - demo = create_gradio_blocks()
+- Environment variables (auto-handled but documented):
+  - SPACE_ID: detected to bind 0.0.0.0 for external access.
+  - PORT/GRADIO_SERVER_PORT: used if provided by Spaces.
+  - HOST/GRADIO_SERVER_NAME: fallback to 0.0.0.0 on Spaces.
+- Launch behavior:
+  - [python.main()](mcp_server/server.py:159) reads environment and launches Gradio with mcp_server=True, exposing SSE at /gradio_api/mcp/sse.
+
+Judging checklist (mapped to criteria)
+- Completeness
+  - Space: Deployed as Gradio app (via app.py or custom command).
+  - Documentation: This README plus in-app articles on each tab.
+  - Demo video: Record a short walkthrough showing:
+    - Semantic search query → best match → path copied
+    - Get Code → paste path → view code
+    - Optional: Show MCP SSE URL in VS Code Kilo Code settings
+  - Social post: See template below.
+- Design / Polished UI-UX
+  - Themed UI, curated examples, helpful articles, consistent labels, and spacing.
+- Functionality (Gradio 6 + MCP)
+  - Remote MCP server via SSE using Gradio’s mcp_server=True.
+  - Three read-only tools exposed: list_items, semantic_search, get_code.
+- Creativity
+  - Focused retrieval assistant tailored for ML example discovery.
+- Documentation
+  - Clear instructions here and inline in the app.
+- Real-world impact
+  - Quickly locate canonical ML examples from a curated KB for faster prototyping.
+
+Demo video storyboard (quick script)
+- 1) Open the Space and explain the three tabs (10s).
+- 2) On Semantic Search, select an example → show best match + score (20s).
+- 3) Copy the path → switch to Get Code → paste → show source (20s).
+- 4) Show List Items tab to demonstrate KB breadth (10s).
+- 5) Mention SSE endpoint for MCP in VS Code Kilo Code and how to configure it (10s).
+
+Social post template (edit to your tone)
+- Title: "ML Starter MCP Server: Pure Retrieval over ML Examples via Gradio 6 + MCP"
+- Body:
+  - "Just shipped a pure-retrieval MCP server with Gradio 6. Browse a local ML knowledge base, semantic-search with MiniLM, and fetch code fast. Remote MCP exposed via SSE. Try the Space: <Space URL>"
+  - Hashtags: #Gradio #MCP #AI #ML #NLP #ComputerVision #HuggingFace
+- Media: Attach a 30–60s demo clip or GIF showing query → result → code.
+
+Roadmap ideas (post-hackathon)
+- List tab enhancements: add interactive filters and a table view.
+- Search tab: optionally show top-k matches (UI only; keep public tool best-1 for scope).
+- Code tab: add “Copy Path” and “Copy Code” buttons and basic syntax-aware formatting.
+- Light/dark theme toggle with persisted preference.
