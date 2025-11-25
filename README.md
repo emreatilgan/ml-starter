@@ -4,7 +4,7 @@ emoji: 🧠
 colorFrom: blue
 colorTo: green
 sdk: gradio
-sdk_version: "5.49.1"
+sdk_version: "6.0.0"
 app_file: app.py
 license: apache-2.0
 pinned: true
@@ -145,7 +145,6 @@ similarity: cosine
 | Chunking             | File-level (docstring + prefix)                              |
 | Similarity Function  | Dot product on L2-normalized vectors                         |
 | Results Returned     | Top-1 match (deterministic)                                  |
-| Rerankers            | Not applicable (pure retrieval)                              |
 
 ### Configuration Example
 
@@ -190,9 +189,7 @@ ml-starter/
 
 ## 🎬 Demo
 
-* Walk through the three tabs in Gradio (List Items → Semantic Search → Get Code).
-* Copy the SSE URL into your MCP client and trigger each tool from within the editor.
-* Optional: record a quick clip showing semantic query → best match → code inspection.
+* In progress
 
 ---
 
