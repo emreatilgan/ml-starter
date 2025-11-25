@@ -1,28 +1,97 @@
-ML Starter MCP Server (Gradio Remote Only)
-===========================================
+---
+title: ML Starter MCP Server
+emoji: 🧠
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: "5.49.1"
+app_file: app.py
+license: apache-2.0
+pinned: true
+short_description: Pure-retrieval MCP server that indexes the ML Starter knowledge base with deterministic semantics search.
+tags:
+  - building-mcp-track-enterprise
+  - gradio
+  - mcp
+  - retrieval
+  - embeddings
+  - python
+  - knowledge-base
+  - semantic-search
+  - sentence-transformers
+  - huggingface
+---
 
-Overview
-- Purpose: A pure retrieval Model Context Protocol (MCP) server that indexes your local ML knowledge base and exposes three read-only tools:
-  - list_items – list all available KB items with metadata
-  - semantic_search – given a markdown problem, return the single most relevant file (path + score)
-  - get_code – fetch full Python source by path
-- Scope: No data analysis, no CSV manipulation, no pipeline building, and no code generation. Deterministic, minimal API.
+# ML Starter MCP Server
+<p align="center">
+  <img src="https://dummyimage.com/1000x180/020617/ffffff&text=ML+Starter+MCP+Server" height="90px" alt="ML Starter Banner">
+</p>
 
-Run as a remote MCP server (only mode)
-1) Install
-   - pip install -r requirements.txt
-2) Launch Gradio MCP
-   - python -m mcp_server.server --host 127.0.0.1 --port 7860
-3) Endpoint URL (MCP SSE)
-   - http://127.0.0.1:7860/gradio_api/mcp/sse
+Gradio-powered **remote-only** MCP server that exposes a curated ML knowledge base through deterministic, read-only tooling. Ideal for editors like Claude Desktop, VS Code (Kilo Code), or Cursor that want a trustworthy retrieval endpoint with **no side-effects**.
 
-VS Code Kilo Code MCP settings (remote URL)
-Add or update your MCP settings
+![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![License](https://img.shields.io/badge/license-Apache%202.0-green) ![Status](https://img.shields.io/badge/Status-Active-success) ![MCP](https://img.shields.io/badge/MCP-enabled-brightgreen) ![Retrieval](https://img.shields.io/badge/Retrieval-pure-lightgrey) ![SentenceTransformers](https://img.shields.io/badge/Embeddings-all--MiniLM--L6--v2-6f42c1)
 
-Example configuration:
+---
+
+## 🧩 Overview
+
+The **ML Starter MCP Server** indexes the entire `knowledge_base/` tree (audio, vision, NLP, RL, etc.) and makes it searchable through:
+
+* `list_items` – enumerate every tutorial/script with metadata.
+* `semantic_search` – vector search over docstrings and lead context to find the single best code example for a natural-language brief.
+* `get_code` – return the full Python source for a safe, validated path.
+
+The server is deterministic (seeded numpy/torch), write-protected, and designed to run as a **Gradio MCP SSE endpoint** suitable for Hugging Face Spaces or on-prem deployments.
+
+---
+
+## 📚 ML Starter Knowledge Base
+
+* Root: `knowledge_base/`
+* Domains:
+  * `audio/`
+  * `generative/`
+  * `graph/`
+  * `nlp/`
+  * `rl/`
+  * `structured_data/`
+  * `timeseries/`
+  * `vision/`
+* Each file stores a complete, runnable ML example with docstring summaries leveraged during indexing.
+
+### Features exposed via MCP
+
+* ✅ Vector search via `sentence-transformers/all-MiniLM-L6-v2` with cosine similarity.
+* ⚙️ Safe path resolution ensures only in-repo `.py` files can be fetched.
+* 🧮 Metadata-first outputs (category, filename, semantic score) for quick triage.
+* 🛡️ Read-only contract; zero KB mutations, uploads, or side effects.
+* 🌐 Spaces-ready networking with auto `0.0.0.0` binding when environment variables are provided by the platform.
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+### Running the MCP Server
+
+```bash
+python -m mcp_server.server --host 127.0.0.1 --port 7860
+```
+
+* **SSE Endpoint:** `http://127.0.0.1:7860/gradio_api/mcp/sse`
+* Launch with `mcp_server=True` (handled by `mcp_server/server.py`).
+
+### VS Code Kilo Code Settings
+
+```json
 {
   "mcpServers": {
-    "kb-retrieval-remote": {
+    "ml-starter-kb": {
       "url": "http://127.0.0.1:7860/gradio_api/mcp/sse",
       "disabled": false,
       "timeout": 60,
@@ -31,211 +100,199 @@ Example configuration:
     }
   }
 }
+```
 
-Available tools
-- list_items → lists all KB items
-- semantic_search(problem_markdown: str) → returns best_match and score
-- get_code(path: str) → returns full Python source
+### Environment Variables
 
-Notes
-- The SSE endpoint path is managed by Gradio and is fixed at /gradio_api/mcp/sse when launched with mcp_server=True.
-- Docstrings drive the MCP tool descriptions. Update the docstrings in create_gradio_blocks() if you change inputs/outputs.
-- This is still a pure-retrieval server; no side-effects or KB writes.
+```bash
+export TOKENIZERS_PARALLELISM=false
+export PYTORCH_ENABLE_MPS_FALLBACK=1  # optional, improves macOS stability
+```
 
-Knowledge Base
-- Expected location: knowledge_base/
-- Categories (directories):
-  - audio/, generative/, graph/, nlp/, rl/, structured_data/, timeseries/, vision/
-- Each subfolder contains many Python files (examples/tutorials)
+---
 
-Semantic Search
-- Embedding model: sentence-transformers/all-MiniLM-L6-v2
-- Similarity: cosine similarity on L2-normalized vectors (numpy)
-- Embedding text per KB file:
-  "{category}/{filename}: {docstring or first lines}"
-- Returns only the single best match and its score.
+## 🧠 MCP Usage
 
-Project Layout
-- Core modules:
-  - mcp_server/server.py – Gradio remote MCP entrypoint and minimal UI wrappers
-  - mcp_server/loader.py – KB scanning, safe path resolution, code reading, summary extraction
-  - mcp_server/embeddings.py – Embedder wrapper and in-memory cosine index
-  - Tools:
-    - mcp_server/tools/list_items.py
-    - mcp_server/tools/semantic_search.py
-    - mcp_server/tools/get_code.py
-- Packaging helpers:
-  - mcp_server/__init__.py
-  - mcp_server/tools/__init__.py
-- Dependencies:
-  - requirements.txt
+Any MCP-capable client can connect to the SSE endpoint to:
 
-Install
-1) Use Python 3.10+ (recommended 3.11+)
-2) Create and activate a virtualenv
-   - python3 -m venv .venv
-   - source .venv/bin/activate
-3) Install dependencies
-   - pip install -r requirements.txt
+* Browse the full inventory of ML tutorials.
+* Submit a markdown problem statement and receive the best-matching file path plus relevance score.
+* Fetch the code immediately and render it inline (clients typically syntax-highlight the response).
 
-Notes on PyTorch:
-- sentence-transformers depends on PyTorch. If you need CPU-only:
-  - pip install torch --index-url https://download.pytorch.org/whl/cpu
-- Otherwise, the default pip install should fetch an appropriate wheel.
+The Gradio UI mirrors these capabilities via three tabs (List Items, Semantic Search, Get Code) for manual exploration.
 
-Exposed Tools (MCP via SSE)
-- list_items
-  - Returns:
-    [
-      {
-        "id": "nlp/text_classification_with_transformer.py",
-        "category": "nlp",
-        "filename": "text_classification_with_transformer.py",
-        "path": "knowledge_base/nlp/text_classification_with_transformer.py",
-        "summary": "..."
-      },
-      ...
-    ]
-- semantic_search
-  - Input:
-    {
-      "problem_markdown": "I want to fine-tune a transformer for sentiment classification."
-    }
-  - Output:
-    {
-      "best_match": "knowledge_base/nlp/text_classification_with_transformer.py",
-      "score": 0.89
-    }
-- get_code
-  - Input:
-    {
-      "path": "knowledge_base/nlp/text_classification_with_transformer.py"
-    }
-  - Output:
-    "<full Python source code>"
+---
 
-Determinism
-- Seeded numpy and torch (best-effort)
-- TOKENIZERS_PARALLELISM disabled
-- Pure retrieval only; no modifications to the knowledge base
+## 🔤 Supported Embeddings
 
-KB Scanning and Safety
-- Root discovery: project root inferred from mcp_server/
-- KB root: knowledge_base/
-- Only .py files are indexed
-- Safe path resolution ensures inputs point inside the KB and are Python files
+* `sentence-transformers/all-MiniLM-L6-v2`
 
-Usage Notes
-- The server returns only existing KB files.
-- Input to semantic_search should be a non-empty string; otherwise validation error is raised.
-- get_code accepts both:
-  - "knowledge_base/<category>/<file>.py"
-  - "<category>/<file>.py"
-- list_items returns minimal metadata including summary derived from module docstring or the first non-empty line.
+### Configuration Example
 
-Design Details
-- Embedding construction in mcp_server/embeddings.py
-- Index build is lazy and cached on first semantic_search call
-- Cosine similarity is implemented as dot product on L2-normalized vectors
-- No FAISS dependency; numpy is sufficient for MVP
+```yaml
+embedding_model: sentence-transformers/all-MiniLM-L6-v2
+batch_size: 32
+similarity: cosine
+```
 
-Troubleshooting
-- Torch install issues:
-  - Try CPU-only wheel: pip install torch --index-url https://download.pytorch.org/whl/cpu
-- Permission/path issues:
-  - Ensure you run from project root containing knowledge_base/
-- Missing models:
-  - First run downloads "sentence-transformers/all-MiniLM-L6-v2"
+---
 
-License
-- Internal utility; no external distribution intended.
+## 🔍 Retrieval Strategy
 
-Attribution
-- MCP server powered by Gradio’s MCP support and Sentence-Transformers for embeddings.
+| Component            | Description                                                  |
+|----------------------|--------------------------------------------------------------|
+| Index Type           | In-memory cosine index backed by numpy vectors               |
+| Chunking             | File-level (docstring + prefix)                              |
+| Similarity Function  | Dot product on L2-normalized vectors                         |
+| Results Returned     | Top-1 match (deterministic)                                  |
+| Rerankers            | Not applicable (pure retrieval)                              |
 
-UI/UX polish (what you get out-of-the-box)
-- Theming + CSS: Soft theme fallback with custom CSS for tighter visuals. See [python.create_gradio_blocks()](mcp_server/server.py:13) near the "Theme and lightweight custom CSS" section.
-- Curated examples: Quick-start examples are prefilled for both Semantic Search and Get Code tabs to reduce first-run friction.
-- Guided articles per tab:
-  - Browse Knowledge Base includes a hero guide with tips.
-  - Semantic Search and Open Code include mini “How-to” sections for clarity.
-- Clear labeling, spacing, and consistent tone across tabs.
-- Spaces-ready networking: The server auto-binds to 0.0.0.0 on Hugging Face Spaces to ensure external access. See [python.main()](mcp_server/server.py:159).
+### Configuration Example
 
-How the polished UI is structured
-- Tabs (via [python.create_gradio_blocks()](mcp_server/server.py:13)):
-  - "List Items" (Browse Knowledge Base)
-    - Output: JSON list of items (id, category, filename, path, summary).
-    - Article: Hero guide with tips for using the app end-to-end.
-  - "Semantic Search"
-    - Input: Markdown textbox (with examples).
-    - Output: JSON containing the best match object and cosine score.
-    - Article: Step-by-step instructions to go from query → code.
-  - "Get Code"
-    - Input: KB path textbox (with examples).
-    - Output: Syntax-highlighted Python source.
-    - Article: Path formatting hints and usage notes.
+```yaml
+retriever: cosine
+max_results: 1
+```
 
-Hugging Face Spaces setup (recommended)
-- Space type: Gradio (Python).
-- Python version: 3.10+ (3.11 recommended).
-- Hardware: CPU is sufficient (MiniLM model). For faster cold starts, consider persistent storage.
-- requirements.txt already includes:
-  - gradio[mcp]
-  - sentence-transformers, numpy, torch, huggingface_hub
-- Entry options:
-  1) Minimal change (use your current entrypoint):
-     - Spaces defaults require an app object (e.g., demo) in app.py.
-     - To keep your CLI entrypoint, set a Custom Command in Space Settings to:
-       - python -m mcp_server.server
-  2) Conventional Gradio app.py (recommended for Spaces auto-discovery):
-     - Create an app.py that exposes a demo object:
-       - [python.create_gradio_blocks()](mcp_server/server.py:13) can be imported and used as:
-         - demo = create_gradio_blocks()
-- Environment variables (auto-handled but documented):
-  - SPACE_ID: detected to bind 0.0.0.0 for external access.
-  - PORT/GRADIO_SERVER_PORT: used if provided by Spaces.
-  - HOST/GRADIO_SERVER_NAME: fallback to 0.0.0.0 on Spaces.
-- Launch behavior:
-  - [python.main()](mcp_server/server.py:159) reads environment and launches Gradio with mcp_server=True, exposing SSE at /gradio_api/mcp/sse.
+---
 
-Judging checklist (mapped to criteria)
-- Completeness
-  - Space: Deployed as Gradio app (via app.py or custom command).
-  - Documentation: This README plus in-app articles on each tab.
-  - Demo video: Record a short walkthrough showing:
-    - Semantic search query → best match → path copied
-    - Get Code → paste path → view code
-    - Optional: Show MCP SSE URL in VS Code Kilo Code settings
-  - Social post: See template below.
-- Design / Polished UI-UX
-  - Themed UI, curated examples, helpful articles, consistent labels, and spacing.
-- Functionality (Gradio 6 + MCP)
-  - Remote MCP server via SSE using Gradio’s mcp_server=True.
-  - Three read-only tools exposed: list_items, semantic_search, get_code.
-- Creativity
-  - Focused retrieval assistant tailored for ML example discovery.
-- Documentation
-  - Clear instructions here and inline in the app.
-- Real-world impact
-  - Quickly locate canonical ML examples from a curated KB for faster prototyping.
+## 🧩 Folder Structure
 
-Demo video storyboard (quick script)
-- 1) Open the Space and explain the three tabs (10s).
-- 2) On Semantic Search, select an example → show best match + score (20s).
-- 3) Copy the path → switch to Get Code → paste → show source (20s).
-- 4) Show List Items tab to demonstrate KB breadth (10s).
-- 5) Mention SSE endpoint for MCP in VS Code Kilo Code and how to configure it (10s).
+```
+ml-starter/
+├── app.py                  # Optional Gradio hook
+├── mcp_server/
+│   ├── server.py           # Remote MCP entrypoint & UI builder
+│   ├── loader.py           # KB scanning + safe path resolution
+│   ├── embeddings.py       # MiniLM wrapper + cosine index
+│   └── tools/
+│       ├── list_items.py   # list_items()
+│       ├── semantic_search.py  # semantic_search()
+│       └── get_code.py     # get_code()
+├── knowledge_base/         # ML examples grouped by domain
+├── requirements.txt
+└── README.md
+```
 
-Social post template (edit to your tone)
-- Title: "ML Starter MCP Server: Pure Retrieval over ML Examples via Gradio 6 + MCP"
-- Body:
-  - "Just shipped a pure-retrieval MCP server with Gradio 6. Browse a local ML knowledge base, semantic-search with MiniLM, and fetch code fast. Remote MCP exposed via SSE. Try the Space: <Space URL>"
-  - Hashtags: #Gradio #MCP #AI #ML #NLP #ComputerVision #HuggingFace
-- Media: Attach a 30–60s demo clip or GIF showing query → result → code.
+---
 
-Roadmap ideas (post-hackathon)
-- List tab enhancements: add interactive filters and a table view.
-- Search tab: optionally show top-k matches (UI only; keep public tool best-1 for scope).
-- Code tab: add “Copy Path” and “Copy Code” buttons and basic syntax-aware formatting.
-- Light/dark theme toggle with persisted preference.
+## 🔧 MCP Tools (`mcp_server/server.py`)
+
+| MCP Tool       | Python Function                    | Description                                                                             |
+|----------------|------------------------------------|-----------------------------------------------------------------------------------------|
+| `list_items`   | `list_items()`                      | Enumerates every KB entry with category, filename, absolute path, and summary metadata. |
+| `semantic_search` | `semantic_search(problem_markdown: str)` | Embeds the prompt and returns the single best match plus cosine score.                  |
+| `get_code`     | `get_code(path: str)`              | Streams back the full Python source for a validated KB path.                            |
+
+`server.py` registers these functions with Gradio's MCP adapter, wires docstrings into tool descriptions, and ensures the SSE endpoint stays read-only.
+
+---
+
+## 🎬 Demo
+
+* Walk through the three tabs in Gradio (List Items → Semantic Search → Get Code).
+* Copy the SSE URL into your MCP client and trigger each tool from within the editor.
+* Optional: record a quick clip showing semantic query → best match → code inspection.
+
+---
+
+## 📥 Inputs
+
+### 1. `list_items`
+
+No input parameters; returns the entire catalog.
+
+### 2. `semantic_search`
+
+<details>
+<summary>Input Model</summary>
+
+| Field            | Type   | Description                                             | Example                                                         |
+|------------------|--------|---------------------------------------------------------|-----------------------------------------------------------------|
+| problem_markdown | str    | Natural-language description of the ML task or need.    | "I need a transformer example for multilingual NER."           |
+</details>
+
+### 3. `get_code`
+
+<details>
+<summary>Input Model</summary>
+
+| Field | Type | Description                                   | Example                                              |
+|-------|------|-----------------------------------------------|------------------------------------------------------|
+| path  | str  | KB-relative or absolute path to a `.py` file. | "knowledge_base/nlp/text_classification_from_scratch.py" |
+</details>
+
+---
+
+## 📤 Outputs
+
+### 1. `list_items`
+
+<details>
+<summary>Response Example</summary>
+
+```json
+[
+  {
+    "id": "nlp/text_classification_with_transformer.py",
+    "category": "nlp",
+    "filename": "text_classification_with_transformer.py",
+    "path": "knowledge_base/nlp/text_classification_with_transformer.py",
+    "summary": "Fine-tune a Transformer for sentiment classification."
+  }
+]
+```
+</details>
+
+### 2. `semantic_search`
+
+<details>
+<summary>Response Example</summary>
+
+```json
+{
+  "best_match": "knowledge_base/nlp/text_classification_with_transformer.py",
+  "score": 0.89
+}
+```
+</details>
+
+### 3. `get_code`
+
+<details>
+<summary>Response Example</summary>
+
+```json
+{
+  "path": "knowledge_base/vision/grad_cam.py",
+  "source": "<full Python source>"
+}
+```
+</details>
+
+Each response is deterministic for the same corpus and embeddings, allowing MCP clients to trust caching and diffing workflows.
+
+---
+
+## 🛠️ Next Steps
+
+Today the knowledge base focuses on curated **Keras** walkthroughs. Upcoming updates will expand coverage to include:
+
+* TensorFlow
+* PyTorch 
+* scikit-learn
+* ...
+
+These additions will land in the same deterministic retrieval flow, making mixed-framework discovery as seamless as the current experience.
+
+---
+
+## 📘 License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for full terms.
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ for the ML Starter knowledge base • Apache 2.0</sub>
+</p>
