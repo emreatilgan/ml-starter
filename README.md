@@ -271,6 +271,16 @@ Each response is deterministic for the same corpus and embeddings, allowing MCP 
 
 ---
 
+## 👥 Team
+
+**Team Name:** Hepheon
+
+**Team Members:**
+- **Tutkum Akyildiz** - [@Tutkum](https://huggingface.co/Tutkum) - Product
+- **Emre Atilgan** - [@emreatilgan](https://huggingface.co/emreatilgan) - Tech
+
+---
+
 ## 🛠️ Next Steps
 
 Today the knowledge base focuses on curated **Keras** walkthroughs. Upcoming updates will expand coverage to include:
