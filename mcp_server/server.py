@@ -139,32 +139,39 @@ def create_gradio_blocks() -> gr.Blocks:
     ]
 
     hero_md = """
-# 🚀 ML Starter MCP Server & UI
+# ⚡️ ML Starter: Your ML Launchpad
 
-Meet your AI knowledge base copilot. This app does two things:
-1) A visual UI to explore the ML knowledge base.
-2) A remote MCP server that lets any MCP-compatible client call the same tools programmatically.
+## **Starting an ML project and overwhelmed by where to begin?**
+## **LLMs not specialized enough for your domain?**
+## **Need real, reusable code instead of vague suggestions?**
 
-What is MCP?
-- The Model Context Protocol (MCP) is an open standard for tools your AI can call. This server exposes three tools over SSE so IDEs/agents can use them as if they were built-ins.
+### **Describe your problem → get the top-ranked match → pull the exact code file.**
 
-What you can do here:
-- 📚 Browse Items — see everything in the knowledge base with quick summaries.
-- 🔎 Semantic Search — paste your problem; get the best matching recipe + similarity score.
-- 💻 Get Code — fetch the exact Python file so you can copy/paste or adapt it.
+---
 
-How it works under the hood:
-- We build sentence-embedding vectors for every item and do cosine similarity search.
-- Each item includes id, category, path, and a summary derived from docstrings or first lines.
-- The remote endpoint is available at /gradio_api/mcp/sse when this app is running.
+### 🔥 Why you'll love it
+- 🎯 **Problem-to-code in one flow** — search semantically, explore context, and download source.
+- 🧠 **Domain-tuned knowledge** — embeddings built over curated ML projects across vision, NLP, audio, structured data, and more.
+- 🤖 **Automation ready** — the same tools power IDEs/agents via MCP over SSE.
 
-Quickstart:
-1) Go to “🔎 Semantic Search”, describe your task, and submit.
-2) Copy the returned path.
-3) Open “💻 Get Code”, paste the path, and retrieve the full source.
-4) If you want to see all options first, try “📚 List Items”.
+### 🚀 What you can do
+- 📚 **Browse Items** — scan the entire library with instant summaries.
+- 🔎 **Semantic Search** — paste your challenge and get the closest-fit recipe plus similarity score.
+- 💻 **Get Code** — drop in the path and copy the full Python implementation.
 
-Tip: You can run this UI locally or on Spaces. Clients can connect to the MCP endpoint to call list_items(), semantic_search(), and get_code().
+### 🛠 Under the hood
+- Sentence-transformer embeddings + cosine similarity for precise retrieval.
+- Rich metadata (id, category, path, summary) for fast filtering.
+- Remote MCP endpoint at `/gradio_api/mcp/sse` exposing `list_items()`, `semantic_search()`, `get_code()`.
+
+### ⏱ Quickstart
+1. Head to “🔎 Semantic Search”, describe what you're building, and submit.
+2. Copy the suggested path from the results.
+3. Open “💻 Get Code”, paste the path, and grab the exact source.
+4. Want the big picture first? Start with “📚 Browse Items”.
+
+### 💡 Power tip
+Run locally or on Spaces, then connect any MCP-compatible client to orchestrate the same workflow programmatically.
 """
 
     search_article = """
@@ -193,7 +200,7 @@ Paste a valid knowledge base path to fetch the full Python source.
         fn=list_items,
         inputs=None,
         outputs=gr.JSON(label="📦 Items (JSON)"),
-        title="📚 Machine Learning Starter",
+        title="📚 Browse Items",
         description="Explore every ML Starter KB entry — id, category, path, and summary.",
         article="",
     )
