@@ -77,26 +77,15 @@ The server is deterministic (seeded numpy/torch), write-protected, and designed 
 pip install -r requirements.txt
 ```
 
-### Running the MCP Server
 
-```bash
-python -m mcp_server.server --host 127.0.0.1 --port 7860
-```
 
-* **SSE Endpoint:** `http://127.0.0.1:7860/gradio_api/mcp/sse`
-* Launch with `mcp_server=True` (handled by `mcp_server/server.py`).
-
-### VS Code Kilo Code Settings
+### MCP Setting
 
 ```json
 {
   "mcpServers": {
-    "ml-starter-kb": {
-      "url": "http://127.0.0.1:7860/gradio_api/mcp/sse",
-      "disabled": false,
-      "timeout": 60,
-      "alwaysAllow": [],
-      "disabledTools": []
+    "ML-Starter": {
+      "url": "https://mcp-1st-birthday-ml-starter.hf.space/gradio_api/mcp/"
     }
   }
 }
